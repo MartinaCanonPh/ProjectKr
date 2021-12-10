@@ -88,7 +88,7 @@ public class GraphController {
         Logic.validateProcessTime(p);
 
         //SORTING
-        Logic.sortProcessTime(p);
+        Collections.sort(p);
 
         //CREATION FILE INPUT DZN
         Logic.writeProcessTime(myInput,p);
@@ -126,7 +126,7 @@ public class GraphController {
         Logic.validateProcessTime(p);
 
         //SORTING
-        Logic.sortProcessTime(p);
+        Collections.sort(p);
 
         //CREATION FILE INPUT DZN
         Logic.writeNumMachines(myInput,nmachines);

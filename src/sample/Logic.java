@@ -41,11 +41,12 @@ class Logic {
 
     }
 
-    static final ArrayList<Integer> sortProcessTime(ArrayList<Integer> p){
-        Collections.sort(p);
-        return p;
-    }
+//    static final ArrayList<Integer> sortProcessTime(ArrayList<Integer> p){
+//        Collections.sort(p);
+//        return p;
+//    }
 
+    //TODO
     static final void sortJobsByProcessTimeOverWeights(ArrayList<Integer> p, ArrayList<Integer> w){
         //TODO: maybe we need a mapping
     }
