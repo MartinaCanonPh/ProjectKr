@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <center>
+      <VBox alignment="CENTER" spacing="15.0">
+         <children>
+            <Button fx:id="singleBtn" mnemonicParsing="false" onAction="#create_frame_single" prefWidth="150.0" text="1 macchina" />
+            <Button fx:id="multipleBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#create_frame_multiple" prefWidth="150.0" text="M macchine" />
+            <Button fx:id="multiple_wBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefWidth="150.0" onAction="#create_frame_single_weighted" text="1 macchina + pesi" />
+            <Button fx:id="single_wBtn" layoutX="10.0" layoutY="35.0" mnemonicParsing="false" prefWidth="150.0"  onAction="#create_frame_multiple_weighted" text="M macchine + pesi" />
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="borderPane" prefHeight="300.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.GraphController">
+   <left>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <content>
+            <VBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <VBox layoutX="10.0" layoutY="20.0" spacing="10.0">
+                     <children>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Label prefWidth="60.0" text="# Jobs" />
+                              <TextField fx:id="njobs" onAction="#create_jobs" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
+                           </children>
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </HBox>
+                        <HBox fx:id="machineBox" alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Label prefWidth="60.0" text="Macchine" />
+                              <TextField fx:id="macchine" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
+                           </children>
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#execute" text="Esegui" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="jobBox" alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS" />
+               </children>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </VBox>
+         </content></ScrollPane>
+   </left>
+</BorderPane>
