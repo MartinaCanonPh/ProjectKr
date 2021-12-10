@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import sun.rmi.runtime.Log;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -26,6 +27,16 @@ public class GraphController {
 
     private ArrayList<TextField> jobsP;  //tempi di processamento dei job
     private ArrayList<TextField> weights;   //pesi dei job
+    private ArrayList<TextField> machineWeights; //pesi delle macchine
+
+    private FileWriter myInput;
+    {
+        try {
+            myInput = new FileWriter("jobSchedulingInput.dzn");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void initialize(){
         machineBox.setVisible(!single);
@@ -36,15 +47,14 @@ public class GraphController {
 
         try {
 
-            jobs = Integer.parseInt(njobs.getText());
-
-            if (jobs <=1)
-                throw new Exception("njobs must be grater tha 0: you have to schedule at least 2 job");
-            //TODO: lanciare una finestra di warning
+            Logic.validateNumJobs(Integer.parseInt(njobs.getText()));
+            Logic.writeNumJobs(myInput,Integer.parseInt(njobs.getText()));
 
             this.jobsP = new ArrayList<>();
             if (weighted)
                 weights = new ArrayList<>();
+            if(weighted && macchine.getText()!=null)
+                machineWeights = new ArrayList<>();
 
             jobBox.getChildren().clear();
 
@@ -75,25 +85,16 @@ public class GraphController {
 
     private void singleMachineInput(Integer njobs, ArrayList<Integer> p){
         //INPUT VALIDATION
-        for (Integer t: p) {
-            assert (t>0):"Process time not valid, it must be grater than 0";
-        }
+        Logic.validateProcessTime(p);
 
         //SORTING
-        Collections.sort(p);
+        Logic.sortProcessTime(p);
 
         //CREATION FILE INPUT DZN
+        Logic.writeProcessTime(myInput,p);
         try {
-            FileWriter myInput = new FileWriter("jobSchedulingInput.dzn");
-            myInput.write("njobs="+njobs+";\n");
-            myInput.write("p=[");
-            for (int i=0; i<p.size()-1;i++)
-                myInput.write(p.get(i)+", ");
-            myInput.write(p.get(p.size()-1)+"];");
             myInput.close();
-            System.out.println("Successfully wrote to the file single machine input");
-        }catch (IOException e){
-            System.out.println("An error occurred in creating single machine input.");
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -101,34 +102,18 @@ public class GraphController {
 
     private void singleMachineWeightInput(Integer njobs, ArrayList<Integer> p, ArrayList<Integer> w){
         //INPUT VALIDATION
-        for (Integer t: p) {
-            assert (t>0):"Process time not valid, it must be greater than 0";
-        }
-        for(Integer x: w) {
-            assert (x>0): "Weight not valid, it must be at least 1";
-        }
+        Logic.validateProcessTime(p);
+        Logic.validateWeights(w);
 
         //TODO: SORTING, corrispondenza di indice tra tempi e pesi da ordinare in base al p[i]/w[i] più piccolo
+        Logic.sortJobsByProcessTimeOverWeights(p,w);
 
         //CREATION FILE INPUT DZN
+        Logic.writeProcessTime(myInput,p);
+        Logic.writeWeights(myInput,w);
         try {
-            FileWriter myInput = new FileWriter("jobSchedulingInput.dzn");
-            myInput.write("njobs="+njobs+";\n");
-
-            myInput.write("p=[");
-            for (int i=0; i<p.size()-1;i++)
-                myInput.write(p.get(i)+", ");
-            myInput.write(p.get(p.size()-1)+"];");
-
-            myInput.write("w=[");
-            for (int i=0; i<w.size()-1;i++)
-                myInput.write(w.get(i)+", ");
-            myInput.write(w.get(w.size()-1)+"];");
             myInput.close();
-
-            System.out.println("Successfully wrote to the file single machine with weight input");
-        }catch (IOException e){
-            System.out.println("An error occurred in creating single machine with weight input.");
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -137,72 +122,42 @@ public class GraphController {
     private void multipleMachineInput(Integer njobs, Integer nmachines, ArrayList<Integer> p){
 
         //INPUT VALIDATION
-        assert (nmachines>1):"The number of the machines must be greater than 1, otherwise choose single machine solver";
-        for (Integer t: p) {
-            assert (t>0):"Process time not valid, it must be grater than 0";
-        }
+        Logic.validateNumMachines(nmachines);
+        Logic.validateProcessTime(p);
 
         //SORTING
-        Collections.sort(p);
+        Logic.sortProcessTime(p);
 
         //CREATION FILE INPUT DZN
+        Logic.writeNumMachines(myInput,nmachines);
+        Logic.writeProcessTime(myInput,p);
         try {
-            FileWriter myInput = new FileWriter("jobSchedulingInput.dzn");
-            myInput.write("njobs="+njobs+";\n");
-            myInput.write("nmachines="+nmachines+";\n");
-
-            myInput.write("p=[");
-            for (int i=0; i<p.size()-1;i++)
-                myInput.write(p.get(i)+", ");
-            myInput.write(p.get(p.size()-1)+"];");
             myInput.close();
-            System.out.println("Successfully wrote to the file multiple machine input");
-        }catch (IOException e){
-            System.out.println("An error occurred in creating multiple machine input.");
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
     private void multipleMachineWeightInput(Integer njobs, Integer nmachines, ArrayList<Integer> p, ArrayList<Integer> w, ArrayList<Integer> wMachines){
+
         //INPUT VALIDATION
-        assert (nmachines>1):"The number of the machines must be greater than 1, otherwise choose single machine solver";
-        for (Integer t: p) {
-            assert (t>0):"Process time not valid, it must be grater than 0";
-        }
-        for(Integer x: w) {
-            assert (x>0): "Weight not valid, it must be at least 1";
-        }
+        Logic.validateNumMachines(nmachines);
+        Logic.validateProcessTime(p);
+        Logic.validateWeights(w);
+        Logic.validateMachinesWeights(wMachines);
 
         //TODO: SORTING
+        Logic.sortJobsByProcessTimeOverWeights(p,w);
 
         //CREATION FILE INPUT DZN
+        Logic.writeNumMachines(myInput,nmachines);
+        Logic.writeProcessTime(myInput,p);
+        Logic.writeWeights(myInput,w);
+        Logic.writeMachinesWeights(myInput,wMachines);
         try {
-            FileWriter myInput = new FileWriter("jobSchedulingInput.dzn");
-            myInput.write("njobs="+njobs+";\n");
-            myInput.write("nmachines="+nmachines+";\n");
-
-            myInput.write("p=[");
-            for (int i=0; i<p.size()-1;i++)
-                myInput.write(p.get(i)+", ");
-            myInput.write(p.get(p.size()-1)+"];");
             myInput.close();
-
-            myInput.write("w=[");
-            for (int i=0; i<w.size()-1;i++)
-                myInput.write(w.get(i)+", ");
-            myInput.write(w.get(w.size()-1)+"];");
-            myInput.close();
-
-            myInput.write("wMachines=[");
-//            for (int i=0; i<w.size()-1;i++)
-//                myInput.write(w.get(i)+", ");
-//            myInput.write(p.get(w.size()-1)+"];");
-            myInput.close();
-
-            System.out.println("Successfully wrote to the file multiple machine with weight input");
-        }catch (IOException e){
-            System.out.println("An error occurred in creating multiple machine with weight input.");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -213,23 +168,20 @@ public class GraphController {
         Process pr = null;
         try {
             pr = run.exec(cmd);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            pr.waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-        String line = "";
-        while (true) {
             try {
-                if (!((line=buf.readLine())!=null)) break;
-            } catch (IOException e) {
+                pr.waitFor();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(line);
+
+            BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+            String line = "";
+            while (true) {
+                    if (!((line=buf.readLine())!=null)) break;
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
