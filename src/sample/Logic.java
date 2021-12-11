@@ -48,7 +48,28 @@ class Logic {
 
     //TODO
     static final void sortJobsByProcessTimeOverWeights(ArrayList<Integer> p, ArrayList<Integer> w){
-        //TODO: maybe we need a mapping
+        ArrayList<Double>rapporto= new ArrayList();
+        for(int i=0;i<w.size();i++){
+            rapporto.add((p.get(i).doubleValue()/w.get(i).doubleValue()));
+        }
+        for(int i=0;i<rapporto.size();i++){
+            for(int j=0;j<rapporto.size();j++){
+                if(i!=j){
+                    if(rapporto.get(i)<rapporto.get(j)){
+                        Double temp=rapporto.get(i);
+                        rapporto.set(i,rapporto.get(j));
+                        rapporto.set(j,temp);
+                        Integer t1=p.get(i);
+                        p.set(i,p.get(j));
+                        p.set(j,t1);
+                        Integer t2=w.get(i);
+                        w.set(i,w.get(j));
+                        w.set(j,t2);
+                    }
+                }
+            }
+        }
+
     }
 
     static final void writeNumJobs(FileWriter myInputFile, Integer nJobs){
@@ -72,8 +93,8 @@ class Logic {
     }
 
     static final void writeWeights(FileWriter myInputFile, ArrayList<Integer> w){
-
         try{
+            myInputFile.write(("\n"));
             myInputFile.write("w=[");
             for (int i=0; i<w.size()-1;i++)
                 myInputFile.write(w.get(i)+", ");

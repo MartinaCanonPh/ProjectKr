@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import sun.rmi.runtime.Log;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,9 +45,9 @@ public class GraphController {
 
     public void create_jobs(ActionEvent actionEvent) {
         Integer jobs = 0;
-
+        Integer machine=0;
         try {
-
+            jobs = Integer.parseInt(njobs.getText());
             Logic.validateNumJobs(Integer.parseInt(njobs.getText()));
             Logic.writeNumJobs(myInput,Integer.parseInt(njobs.getText()));
 
@@ -61,7 +62,6 @@ public class GraphController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         for (int i = 0; i < jobs; i++) {
             HBox nuovoJob = new HBox();
             nuovoJob.setSpacing(10);
@@ -79,8 +79,10 @@ public class GraphController {
             }else{
                 nuovoJob.getChildren().addAll(new Label("Job "+(i+1)), field);
             }
+
             jobBox.getChildren().add(nuovoJob);
         }
+
     }
 
     private void singleMachineInput(Integer njobs, ArrayList<Integer> p){
@@ -102,6 +104,7 @@ public class GraphController {
 
     private void singleMachineWeightInput(Integer njobs, ArrayList<Integer> p, ArrayList<Integer> w){
         //INPUT VALIDATION
+
         Logic.validateProcessTime(p);
         Logic.validateWeights(w);
 
@@ -163,7 +166,7 @@ public class GraphController {
     }
 
     private void runSolver(String s){
-        String cmd = "C:\\Program Files\\MiniZinc\\minizinc.exe --solver Gecode jobSchedulingInput2.dzn jobScheduling_"+s+".mzn";
+        String cmd = "C:\\Program Files\\MiniZinc\\minizinc.exe --solver Gecode jobSchedulingInput.dzn jobScheduling_"+s+".mzn";
         Runtime run = Runtime.getRuntime();
         Process pr = null;
         try {
@@ -202,9 +205,17 @@ public class GraphController {
         }
         if(single && weighted) {
             ArrayList<Integer> w = new ArrayList<>();
-            for(TextField t : weights){
+
+            /*for(TextField t : weights){
                 process.add(Integer.parseInt(t.getText()));
-            }
+            }*/
+
+            for(int i=0;i<weights.size();i++){
+                    w.add(Integer.parseInt(weights.get(i).getText()));
+                }
+
+
+
             singleMachineWeightInput(num, process, w);
             runSolver("singleMachine_weight");
         }
