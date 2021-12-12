@@ -83,6 +83,7 @@ class Logic {
     static final void writeProcessTime(FileWriter myInputFile, ArrayList<Integer> p){
         try {
             myInputFile.write("p=[");
+
             for (int i=0; i<p.size()-1;i++)
                 myInputFile.write(p.get(i)+", ");
             myInputFile.write(p.get(p.size()-1)+"];");

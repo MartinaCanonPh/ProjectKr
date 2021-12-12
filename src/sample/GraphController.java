@@ -1,12 +1,16 @@
 package sample;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import sun.rmi.runtime.Log;
 
 import java.io.*;
@@ -21,13 +25,14 @@ public class GraphController {
     public VBox jobBox;
     public HBox machineBox;
     public TextField macchine;
-
+    public VBox machineWeightBox;
     public static boolean single;
     public static boolean weighted;
     public BorderPane borderPane;
 
     private ArrayList<TextField> jobsP;  //tempi di processamento dei job
     private ArrayList<TextField> weights;   //pesi dei job
+    @FXML
     private ArrayList<TextField> machineWeights; //pesi delle macchine
 
     private FileWriter myInput;
@@ -84,7 +89,37 @@ public class GraphController {
         }
 
     }
+    public void create_machine(ActionEvent actionEvent) {
+        Integer machine=0;
+        try {
+            machine = Integer.parseInt(macchine.getText());
 
+
+            this.machineWeights = new ArrayList<>();
+            machineWeightBox.getChildren().clear();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(weighted) {
+            for (int i = 0; i < machine; i++) {
+                HBox nuovoMachine = new HBox();
+                nuovoMachine.setSpacing(10);
+                nuovoMachine.setPadding(new Insets(0, 0, 0, 5));
+
+                TextField field = new TextField();
+                field.setMaxWidth(40);
+                this.machineWeights.add(field);
+
+
+                nuovoMachine.getChildren().addAll(new Label("M " + (i + 1)), field);
+
+
+                machineWeightBox.getChildren().add(nuovoMachine);
+            }
+        }
+
+    }
     private void singleMachineInput(Integer njobs, ArrayList<Integer> p){
         //INPUT VALIDATION
         Logic.validateProcessTime(p);
@@ -165,10 +200,11 @@ public class GraphController {
         }
     }
 
-    private void runSolver(String s){
+    public  String runSolver(String s){
         String cmd = "C:\\Program Files\\MiniZinc\\minizinc.exe --solver Gecode jobSchedulingInput.dzn jobScheduling_"+s+".mzn";
         Runtime run = Runtime.getRuntime();
         Process pr = null;
+        String l = "";
         try {
             pr = run.exec(cmd);
             try {
@@ -182,17 +218,19 @@ public class GraphController {
             while (true) {
                     if (!((line=buf.readLine())!=null)) break;
                 System.out.println(line);
+                l+="\n"+line;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println(l);
+    return l;
     }
 
     public void execute(ActionEvent actionEvent) {
 
         Integer num = Integer.parseInt(njobs.getText());
-
+        String output="";
         ArrayList<Integer> process = new ArrayList<>();
         for(TextField t : jobsP){
             process.add(Integer.parseInt(t.getText()));
@@ -201,7 +239,7 @@ public class GraphController {
         //richiamo l'input adatto
         if(single && !weighted){
             singleMachineInput(num, process);
-            runSolver("singleMachine");
+            output=runSolver("singleMachine");
         }
         if(single && weighted) {
             ArrayList<Integer> w = new ArrayList<>();
@@ -217,25 +255,25 @@ public class GraphController {
 
 
             singleMachineWeightInput(num, process, w);
-            runSolver("singleMachine_weight");
+            output=runSolver("singleMachine_weight");
         }
         if(!single){
             Integer numMachines = Integer.parseInt(macchine.getText());
             if(!weighted){
                 multipleMachineInput(num,numMachines,process);
-                runSolver("multipleMachine");
+                output=runSolver("multipleMachine");
             }
             else if(weighted) {
                 ArrayList<Integer> w = new ArrayList<>();
                 for(TextField t : weights){
-                    process.add(Integer.parseInt(t.getText()));
+                    w.add(Integer.parseInt(t.getText()));
                 }
-                ArrayList<Integer> wMchines = new ArrayList<>();
-//                for(TextField t : weightsMachines){
-//                    process.add(Integer.parseInt(t.getText()));
-//                }
-//                multipleMachineWeightInput(num,numMachines,process,w,wMachines);
-                runSolver("multipleMachine_weight");
+                ArrayList<Integer> wMachines = new ArrayList<>();
+                for(TextField t :machineWeights ){
+                   wMachines.add(Integer.parseInt(t.getText()));
+                }
+              multipleMachineWeightInput(num,numMachines,process,w,wMachines);
+                output=runSolver("multipleMachine_weight");
             }
         }
         //TODO: ALTRI CASI CHE RICHIAMANO L'INPUT GIUSTO
@@ -247,8 +285,13 @@ public class GraphController {
         //parserizza l'output
         // chart
 
-
-        //borderPane.setCenter();
+        Text tx1 = new Text(output);
+//set text color
+        tx1.setStroke(Color.RED);
+        tx1.setFill(Color.WHITE);
+//set text font size
+        tx1.setFont(new Font(10));
+        borderPane.setCenter(tx1);
         System.out.println("output di minizinc");
     }
 }
