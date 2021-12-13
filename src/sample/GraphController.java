@@ -333,15 +333,12 @@ public class GraphController {
 
         }
 private void showsuggestion(String output){
-    System.out.println(output);
-    Pattern p=Pattern.compile("UNSATISFIABLE+");
-    Matcher m =p.matcher(output);
-    if(m.matches() ){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setContentText("prova a cambiare qualche campo !!");
-        alert.showAndWait();
+        if(output.length()==24) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setContentText("prova a cambiare qualche campo !!");
+            alert.showAndWait();
+        }
 
     }
-}
 }
