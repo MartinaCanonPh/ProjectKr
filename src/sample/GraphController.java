@@ -262,6 +262,61 @@ public class GraphController {
     return l;
     }
 
+    private String runExample(String s)
+    {
+        String cmd = "C:\\Program Files\\MiniZinc\\minizinc.exe --solver Gecode example_"+s+".dzn jobScheduling_"+s+".mzn";
+        Runtime run = Runtime.getRuntime();
+        Process pr = null;
+        String l = "";
+        try {
+            pr = run.exec(cmd);
+            try {
+                pr.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("example_"+s+".dzn"));
+            String line = "";
+            while (true) {
+                if (!((line=bufferedReader.readLine())!=null)) break;
+                System.out.println(line);
+                l+="\n"+line;
+            }
+            BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+            while (true) {
+                if (!((line=buf.readLine())!=null)) break;
+                System.out.println(line);
+                l+="\n"+line;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return l;
+    }
+
+    public void showExample(ActionEvent actionEvent){
+        String example="";
+        if(single && !weighted)
+        {
+            example = runExample("singleMachine");
+        }else if(single && weighted){
+            example = runExample("singleMachine_weight");
+        }else if(!single && !weighted){
+            example = runExample("multipleMachine");
+        }else if(!single && weighted){
+            example = runExample("multipleMachine_weight");
+        }
+
+        Text tx1 = new Text(example);
+
+        tx1.setStroke(Color.RED);
+        tx1.setFill(Color.WHITE);
+
+        tx1.setFont(new Font(10));
+        borderPane.setCenter(tx1);
+
+    }
+
     public void execute(ActionEvent actionEvent) throws IOException {
 
             Integer num = Integer.parseInt(njobs.getText());
@@ -280,14 +335,9 @@ public class GraphController {
             if (single && weighted) {
                 ArrayList<Integer> w = new ArrayList<>();
 
-            /*for(TextField t : weights){
-                process.add(Integer.parseInt(t.getText()));
-            }*/
-
                 for (int i = 0; i < weights.size(); i++) {
                     w.add(Integer.parseInt(weights.get(i).getText()));
                 }
-
 
                 singleMachineWeightInput(num, process, w);
                 output = runSolver("singleMachine_weight");
@@ -313,26 +363,16 @@ public class GraphController {
                     showsuggestion(output);
                 }
             }
-            //TODO: ALTRI CASI CHE RICHIAMANO L'INPUT GIUSTO
-
-            //prendi i dati dall'array
-            //salva nel file data.dzn
-            //chiama il processo da java es: 'C:\Program Files\MiniZinc\minizinc.exe --solver Gecode' nome_file_data.dzn nome_file_model.mzn
-            //prendi l'output dal processo https://dzone.com/articles/execute-shell-command-java
-            //parserizza l'output
-            // chart
 
             Text tx1 = new Text(output);
-//set text color
+
             tx1.setStroke(Color.RED);
             tx1.setFill(Color.WHITE);
-//set text font size
+
             tx1.setFont(new Font(10));
             borderPane.setCenter(tx1);
-
-
         }
-private void showsuggestion(String output){
+    private void showsuggestion(String output){
     System.out.println(output);
     Pattern p=Pattern.compile("UNSATISFIABLE+");
     Matcher m =p.matcher(output);
