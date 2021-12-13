@@ -1,11 +1,9 @@
 package sample;
 
-import com.sun.org.apache.xerces.internal.parsers.IntegratedParserConfiguration;
-
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 class Logic {
 

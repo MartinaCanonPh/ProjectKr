@@ -24,7 +24,7 @@
                         <HBox fx:id="machineBox" alignment="CENTER" spacing="10.0">
                            <children>
                               <Label prefWidth="60.0" text="Macchine" />
-                              <TextField fx:id="macchine" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
+                              <TextField fx:id="macchine" onAction="#create_machine" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
                            </children>
                            <padding>
                               <Insets left="5.0" />
@@ -38,6 +38,7 @@
                      </children>
                   </VBox>
                   <VBox fx:id="jobBox" alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS" />
+                  <VBox fx:id="machineWeightBox" alignment="CENTER" layoutX="10.0" layoutY="125.0" spacing="10.0" />
                </children>
                <padding>
                   <Insets top="10.0" />
