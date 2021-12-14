@@ -36,7 +36,6 @@ public class GraphController {
     public static boolean weighted;
     public BorderPane borderPane;
 
-    public Button esegui;
 
     private ArrayList<TextField> jobsP;  //tempi di processamento dei job
     private ArrayList<TextField> weights;   //pesi dei job
@@ -54,7 +53,7 @@ public class GraphController {
 
 
     public void initialize(){
-        esegui.setDisable(true);
+        //esegui.setDisable(true);
         machineBox.setVisible(!single);
     }
 
@@ -133,6 +132,10 @@ public class GraphController {
     public void create_machine(ActionEvent actionEvent) {
         Integer machine=0;
         try {
+            if(macchine.getText().isEmpty()){
+                showAlert();
+                return;
+            }
             machine = Integer.parseInt(macchine.getText());
 
 
@@ -338,16 +341,23 @@ public class GraphController {
         tx1.setStroke(Color.RED);
         tx1.setFill(Color.WHITE);
 
-        tx1.setFont(new Font(10));
+        tx1.setFont(new Font(20));
         borderPane.setCenter(tx1);
 
     }
 
-    public boolean fullInput(){
-        return true;
+    private void showAlert(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setContentText("Controlla di aver riempito correttamento tutti i campi.");
+
+        alert.showAndWait();
     }
 
     public void execute(ActionEvent actionEvent) throws IOException {
+            if(!areFilled()){
+                return;
+            }
 
             Integer num = Integer.parseInt(njobs.getText());
             String output = "";
@@ -361,6 +371,7 @@ public class GraphController {
 
                 singleMachineInput(num, process);
                 output = runSolver("singleMachine");
+                showsuggestion(output, "singleMachine");
             }
             if (single && weighted) {
                 ArrayList<Integer> w = new ArrayList<>();
@@ -371,6 +382,7 @@ public class GraphController {
 
                 singleMachineWeightInput(num, process, w);
                 output = runSolver("singleMachine_weight");
+                showsuggestion(output, "singleMachine_weight");
             }
             if (!single) {
                 Integer numMachines = Integer.parseInt(macchine.getText());
@@ -378,7 +390,7 @@ public class GraphController {
 
                     multipleMachineInput(num, numMachines, process);
                     output = runSolver("multipleMachine");
-
+                    showsuggestion(output, "multipleMachine");
                 } else if (weighted) {
                     ArrayList<Integer> w = new ArrayList<>();
                     for (TextField t : weights) {
@@ -390,7 +402,7 @@ public class GraphController {
                     }
                     multipleMachineWeightInput(num, numMachines, process, w, wMachines);
                     output = runSolver("multipleMachine_weight");
-                    showsuggestion(output);
+                    showsuggestion(output, "multipleMachine_weight");
                 }
             }
 
@@ -399,21 +411,62 @@ public class GraphController {
             tx1.setStroke(Color.RED);
             tx1.setFill(Color.WHITE);
 
-            tx1.setFont(new Font(10));
+            tx1.setFont(new Font(20));
             borderPane.setCenter(tx1);
         }
-    private void showsuggestion(String output){
-    System.out.println(output);
-    Pattern p=Pattern.compile("UNSATISFIABLE+");
-    Matcher m =p.matcher(output);
-    if(m.matches() ){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setContentText("prova a cambiare qualche campo !!");
-        alert.showAndWait();
 
+        private boolean areFilled(){
+            if(njobs != null && njobs.getText().isEmpty()){
+                showAlert();
+                return false;
+            }
+            for (TextField t : jobsP) {
+                if(t != null && t.getText().isEmpty()){
+                    showAlert();
+                    return false;
+                }
+            }
+            if(!single && macchine.getText().isEmpty()){
+                showAlert();
+                return false;
+            }
+            if(weighted){
+                for (TextField t : weights) {
+                    if(t.getText().isEmpty()){
+                        showAlert();
+                        return false;
+                    }
+                }
+                if(!single){
+                    for (TextField t : machineWeights) {
+                        if(t.getText().isEmpty()){
+                            showAlert();
+                            return false;
+                        }
+                    }
+                }
+
+            }
+            return true;
+        }
+    private void showsuggestion(String output ,String program){
+        if((output.length()==24) ){
+            String suggestion="";
+            if(program.equals("singleMachine")){
+                suggestion = "Prova a mettere valori non duplicati.";
+            }else if(program.equals("singleMachine_weight")){
+                suggestion = "Prova a mettere qualche valore di peso duplicato.";
+            }else if(program.equals("multipleMachine")){
+                suggestion = "Prova a diminuire il numero delle macchine o ad aumentare il numero di job.";
+            }else if(program.equals("multipleMachine_weight")){
+                suggestion = "Prova ad aumentare i pesi sulle macchine o a diminuire i pesi sui jobs.";
+            }
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Unsatisfiable");
+            alert.setContentText(suggestion);
+            alert.showAndWait();
+        }
     }
-}
 
 
 }

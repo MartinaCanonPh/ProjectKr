@@ -4,9 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 
 public class Controller {
 
@@ -46,5 +49,13 @@ public class Controller {
             e.printStackTrace();
         }
 
+    }
+
+    public void showGit(MouseEvent mouseEvent) {
+        try {
+            Desktop.getDesktop().browse(new URL("https://github.com/MartinaCanonPh/ProjectKr").toURI());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
