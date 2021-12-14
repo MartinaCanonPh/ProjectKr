@@ -4,8 +4,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -33,6 +36,8 @@ public class GraphController {
     public static boolean weighted;
     public BorderPane borderPane;
 
+    public Button esegui;
+
     private ArrayList<TextField> jobsP;  //tempi di processamento dei job
     private ArrayList<TextField> weights;   //pesi dei job
     @FXML
@@ -49,8 +54,24 @@ public class GraphController {
 
 
     public void initialize(){
+        esegui.setDisable(true);
         machineBox.setVisible(!single);
     }
+
+    public void checkNumber(KeyEvent event){
+        if(event.getText() != null && event.getCode()!= KeyCode.ENTER && event.getCode()!= KeyCode.BACK_SPACE && event.getCode()!= KeyCode.ESCAPE
+                && event.getCode()!= KeyCode.LEFT && event.getCode()!= KeyCode.RIGHT && event.getCode()!= KeyCode.DOWN && event.getCode()!= KeyCode.UP
+                && event.getCode()!= KeyCode.TAB
+                && (!event.getText().matches("[0-9]") || event.getText().equals(" "))){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setContentText("Sono validi solo numeri!");
+
+            alert.showAndWait();
+            return;
+        }
+    }
+
 
     public void create_jobs(ActionEvent actionEvent) throws IOException {
         Integer jobs = 0;
@@ -58,6 +79,7 @@ public class GraphController {
 
 
         try {
+            if(njobs.getText() != null && njobs.getText().isEmpty()){return;}
             jobs = Integer.parseInt(njobs.getText());
             Logic.validateNumJobs(Integer.parseInt(njobs.getText()));
             Logic.writeNumJobs(myInput,Integer.parseInt(njobs.getText()));
@@ -89,11 +111,14 @@ public class GraphController {
             nuovoJob.setPadding(new Insets(0,0,0,5));
 
             TextField field = new TextField();
+            field.setOnKeyPressed(this::checkNumber);
+
             field.setMaxWidth(40);
             this.jobsP.add(field);
 
             if (weighted) {
                 TextField w = new TextField();
+                w.setOnKeyPressed(this::checkNumber);
                 w.setMaxWidth(40);
                 weights.add(w);
                 nuovoJob.getChildren().addAll(new Label("Job "+(i+1)), field, new Label("W"+(i+1)), w);
@@ -135,6 +160,7 @@ public class GraphController {
                 nuovoMachine.setPadding(new Insets(0, 0, 0, 5));
 
                 TextField field = new TextField();
+                field.setOnKeyPressed(this::checkNumber);
                 field.setMaxWidth(40);
                 this.machineWeights.add(field);
 
@@ -317,6 +343,10 @@ public class GraphController {
 
     }
 
+    public boolean fullInput(){
+        return true;
+    }
+
     public void execute(ActionEvent actionEvent) throws IOException {
 
             Integer num = Integer.parseInt(njobs.getText());
@@ -384,4 +414,6 @@ public class GraphController {
 
     }
 }
+
+
 }

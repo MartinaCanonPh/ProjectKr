@@ -15,7 +15,7 @@
                         <HBox alignment="CENTER" spacing="10.0">
                            <children>
                               <Label prefWidth="60.0" text="# Jobs" />
-                              <TextField fx:id="njobs" onAction="#create_jobs" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
+                              <TextField fx:id="njobs" onAction="#create_jobs" onKeyPressed="#checkNumber" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
                            </children>
                            <padding>
                               <Insets left="5.0" />
@@ -24,7 +24,7 @@
                         <HBox fx:id="machineBox" alignment="CENTER" spacing="10.0">
                            <children>
                               <Label prefWidth="60.0" text="Macchine" />
-                              <TextField fx:id="macchine" onAction="#create_machine" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
+                              <TextField fx:id="macchine" onAction="#create_machine" onKeyPressed="#checkNumber" prefWidth="85.0" promptText="10" HBox.hgrow="NEVER" />
                            </children>
                            <padding>
                               <Insets left="5.0" />
@@ -32,7 +32,7 @@
                         </HBox>
                         <HBox alignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#execute" text="Esegui" HBox.hgrow="ALWAYS" />
+                              <Button fx:id="esegui" mnemonicParsing="false" onAction="#execute" disable="#fullInput" text="Esegui" HBox.hgrow="ALWAYS" />
                            </children>
                            <children>
                               <Button mnemonicParsing="false" onAction="#showExample" text="Example" HBox.hgrow="ALWAYS" />
