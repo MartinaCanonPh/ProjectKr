@@ -34,6 +34,9 @@
                            <children>
                               <Button mnemonicParsing="false" onAction="#execute" text="Esegui" HBox.hgrow="ALWAYS" />
                            </children>
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#showExample" text="Example" HBox.hgrow="ALWAYS" />
+                           </children>
                         </HBox>
                      </children>
                   </VBox>

@@ -1,0 +1,5 @@
+njobs=3;
+nmachines=2;
+p=[3, 4, 6];
+w=[4, 2, 5];
+wMachines=[8, 9];
