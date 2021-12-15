@@ -64,7 +64,7 @@ public class GraphController {
                 && (!event.getText().matches("[0-9]") || event.getText().equals(" "))){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
-            alert.setContentText("Sono validi solo numeri!");
+            alert.setContentText("Only numeric values are valid!");
 
             alert.showAndWait();
             return;
@@ -99,7 +99,7 @@ public class GraphController {
 
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Dialog");
-                alert.setContentText("Inserisci un numero di jobs superiori ad uno!");
+                alert.setContentText("The number of jobs must be greater than one!");
 
                 alert.showAndWait();
             }
@@ -151,7 +151,7 @@ public class GraphController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
 
-            alert.setContentText("Inserisci un numero di macchine superiori ad 1!");
+            alert.setContentText("The number of machines must be greater than one!");
 
             alert.showAndWait();
         }
@@ -349,7 +349,7 @@ public class GraphController {
     private void showAlert(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error Dialog");
-        alert.setContentText("Controlla di aver riempito correttamento tutti i campi.");
+        alert.setContentText("Check if all the fields are filled.");
 
         alert.showAndWait();
     }
@@ -450,16 +450,16 @@ public class GraphController {
             return true;
         }
     private void showsuggestion(String output ,String program){
-        if((output.length()==24) ){
+        if((output.length()==24 || output.length() == 0) ){
             String suggestion="";
             if(program.equals("singleMachine")){
-                suggestion = "Prova a mettere valori non duplicati.";
+                suggestion = "Try to not put duplicate values.";
             }else if(program.equals("singleMachine_weight")){
-                suggestion = "Prova a mettere qualche valore di peso duplicato.";
+                suggestion = "Try to put some duplicate weight values.";
             }else if(program.equals("multipleMachine")){
-                suggestion = "Prova a diminuire il numero delle macchine o ad aumentare il numero di job.";
+                suggestion = "Try to decrease the machine number or to increase the number of jobs.";
             }else if(program.equals("multipleMachine_weight")){
-                suggestion = "Prova ad aumentare i pesi sulle macchine o a diminuire i pesi sui jobs.";
+                suggestion = "Try to increase the machine number or to decrease the number of jobs";
             }
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Unsatisfiable");
