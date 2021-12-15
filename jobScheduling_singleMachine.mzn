@@ -14,4 +14,4 @@ constraint forall(i in range)(c[i]=c[i-1]+p[i]);
 solve minimize sum(c);
  
 output[ "completion time per jobs = \(c)\n",
-"total completion time minimized =\(sum(c))\n"];
+"total completion time minimized = \(sum(c))\n"];

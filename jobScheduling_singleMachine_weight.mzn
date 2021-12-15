@@ -15,4 +15,4 @@ constraint forall(i in range)(c[i]=c[i-1]+p[i]);
 solve minimize sum(i in indices)(c[i]*w[i]);
  
 output[ "completion time per jobs = \(c)\n",
-"total completion time minimized = \(sum(i in indices)(c[i]*w[i]))\n"];
+"total weighted completion time minimized = \(sum(i in indices)(c[i]*w[i]))\n"];

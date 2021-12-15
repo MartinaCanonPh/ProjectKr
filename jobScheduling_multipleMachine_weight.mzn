@@ -32,4 +32,4 @@ solve minimize v;
 output[
   show_int(3, assign[i,j]) ++ if j==njobs then "\n" else " " endif | i in machines, j in jobs
 ];
-output["total completion time minimized =\(v)\n"];
+output["Assign Matrix [#Machines]x[#Jobs]\nTotal completion time minimized = \(v)\n"];

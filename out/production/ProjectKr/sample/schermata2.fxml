@@ -38,7 +38,7 @@
                         </HBox>
                         <HBox alignment="CENTER">
                            <children>
-                              <Button fx:id="esegui" mnemonicParsing="false" onAction="#execute" text="Esegui" HBox.hgrow="ALWAYS" />
+                              <Button fx:id="esegui" mnemonicParsing="false" onAction="#execute" text="Execute" HBox.hgrow="ALWAYS" />
                            </children>
                            <children>
                               <Button mnemonicParsing="false" onAction="#showExample" text="Example" HBox.hgrow="ALWAYS" />
